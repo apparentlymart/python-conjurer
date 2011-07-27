@@ -67,5 +67,23 @@ def main():
     new_user_selected = mapper.result_to_object(new_result)
     print repr(new_user_selected.__dict__)
 
+    # We'll use the new_user object again to update
+    # the object.
+    # (but you could also start with a new object if you wanted)
+    new_user.username = "ham"
+    update_stmt = mapper.update_stmt_from_object(new_user,
+                                                 no_where=True,
+                                                 exclude_attrs=["user_id"])
+    # FIXME: Eventually the update_stmt_from_object function
+    # will do this automatically if no_where is omitted
+    update_stmt = update_stmt.where(user_table.c.user_id == 4)
+    conn.execute(update_stmt)
+
+    # Now we can select the object again to get the updated version
+    select_stmt = (select( [ user_table ] )
+                      .where(user_table.c.user_id == 4))
+    new_result = conn.execute(select_stmt)
+    new_user_selected = mapper.result_to_object(new_result)
+    print repr(new_user_selected.__dict__)
 
 main()

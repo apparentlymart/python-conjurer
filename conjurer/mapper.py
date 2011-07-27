@@ -90,6 +90,10 @@ class Mapper(object):
         insert = self.source_table.insert()
         return self._apply_values_to_stmt(insert, obj, exclude_attrs)
 
-    def update_stmt_from_object(self, obj):
-        pass
+    def update_stmt_from_object(self, obj, exclude_attrs=None, no_where=False):
+        bare_update = self.source_table.update()
+        update = self._apply_values_to_stmt(bare_update, obj, exclude_attrs)
+        if not no_where:
+            raise Exception("automatic where clause generation for update statements is not yet implemented")
+        return update
 
