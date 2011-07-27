@@ -75,6 +75,8 @@ class Mapper(object):
 
         for mapping in self.mappings:
             (column, attr_name, transform) = mapping
+            if exclude_attrs is not None and attr_name in exclude_attrs:
+                continue
             attr_value = getattr(obj, attr_name, None)
             if attr_value is not None:
                 insert_value = transform.from_object_attr(attr_value)
