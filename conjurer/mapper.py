@@ -37,10 +37,18 @@ class Mapper(object):
             self.mappings.append((column, attr_name, transform))
 
     def _object_from_row(self, row):
+        if row is None:
+            return None
+
         obj = self.target_class()
         for mapping in self.mappings:
             (column, attr_name, transform) = mapping
-            setattr(obj, attr_name, transform.to_object_attr(row[column]))
+            row_value = row[column]
+            if row_value is not None:
+                attr_value = transform.to_object_attr(row_value)
+            else:
+                attr_value = None
+            setattr(obj, attr_name, attr_value)
         return obj
 
     def result_to_object_iter(self, result):
@@ -51,12 +59,33 @@ class Mapper(object):
         row = result.fetchone()
         return self._object_from_row(row)
 
-    def insert_from_object_iter(self, iter):
-        pass
+    def insert_stmt_from_object(self, obj, exclude_attrs=None):
+        if exclude_attrs:
+            # we ask for an iterable but really
+            # we want a dict so we can check it
+            # quickly.
+            _exclude_attrs = exclude_attrs
+            exclude_attrs = {}
+            for attr_name in _exclude_attrs:
+                exclude_attrs[attr_name] = True
+            # Don't need this anymore
+            del _exclude_attrs
 
-    def insert_from_object(self, obj):
-        pass
+        insert_args = {}
 
-    def update_from_object(self, obj):
+        for mapping in self.mappings:
+            (column, attr_name, transform) = mapping
+            attr_value = getattr(obj, attr_name, None)
+            if attr_value is not None:
+                insert_value = transform.from_object_attr(attr_value)
+            else:
+                insert_value = None
+            insert_args[column.name] = insert_value
+
+        insert = self.source_table.insert()
+        return insert.values(**insert_args)
+
+
+    def update_stmt_from_object(self, obj):
         pass
 
