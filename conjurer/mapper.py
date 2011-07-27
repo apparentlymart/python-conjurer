@@ -59,7 +59,7 @@ class Mapper(object):
         row = result.fetchone()
         return self._object_from_row(row)
 
-    def insert_stmt_from_object(self, obj, exclude_attrs=None):
+    def _apply_values_to_stmt(self, stmt, obj, exclude_attrs=None):
         if exclude_attrs:
             # we ask for an iterable but really
             # we want a dict so we can check it
@@ -84,9 +84,11 @@ class Mapper(object):
                 insert_value = None
             insert_args[column.name] = insert_value
 
-        insert = self.source_table.insert()
-        return insert.values(**insert_args)
+        return stmt.values(**insert_args)
 
+    def insert_stmt_from_object(self, obj, exclude_attrs=None):
+        insert = self.source_table.insert()
+        return self._apply_values_to_stmt(insert, obj, exclude_attrs)
 
     def update_stmt_from_object(self, obj):
         pass
