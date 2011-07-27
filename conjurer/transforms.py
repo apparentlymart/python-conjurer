@@ -43,7 +43,7 @@ class PaddedHexTransform(object):
 
         # New value should be the right length
         if len(attr_value) != self.size:
-            raise ValueError("Attribute value must be %i characters long", self.size)
+            raise ValueError("Attribute value must be %i characters long" % self.size)
 
         # Will raise ValueError if the value isn't
         # a valid hex string.
