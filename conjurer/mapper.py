@@ -1,5 +1,10 @@
 
 from conjurer.transforms import IdentityTransform
+from conjurer.expressions import AttributeElement
+
+
+class AttributeMap(object):
+    pass
 
 
 class Mapper(object):
@@ -8,6 +13,7 @@ class Mapper(object):
         self.target_class = target_class
         self.source_table = source_table
         self.mappings = []
+        self.a = AttributeMap()
 
         if custom_mappings is None:
             custom_mappings = {}
@@ -33,6 +39,11 @@ class Mapper(object):
                 transform = IdentityTransform.instance()
             if attr_name is None:
                 attr_name = column.name
+
+            # Create an AttributeElement object that
+            # can be used in SQL expressions for this
+            # column, with the associated transform.
+            self.a.__dict__[attr_name] = AttributeElement(column, transform)
 
             self.mappings.append((column, attr_name, transform))
 

@@ -62,7 +62,7 @@ def main():
     # apply the transform to the RHS so we don't need
     # to use the raw DB value here.
     select_stmt = (select( [ user_table ] )
-                      .where(user_table.c.user_id == 4))
+                      .where(mapper.a.user_id == "00000004"))
     new_result = conn.execute(select_stmt)
     new_user_selected = mapper.result_to_object(new_result)
     print repr(new_user_selected.__dict__)
@@ -76,12 +76,12 @@ def main():
                                                  exclude_attrs=["user_id"])
     # FIXME: Eventually the update_stmt_from_object function
     # will do this automatically if no_where is omitted
-    update_stmt = update_stmt.where(user_table.c.user_id == 4)
+    update_stmt = update_stmt.where(mapper.a.user_id == "00000004")
     conn.execute(update_stmt)
 
     # Now we can select the object again to get the updated version
     select_stmt = (select( [ user_table ] )
-                      .where(user_table.c.user_id == 4))
+                      .where(mapper.a.user_id == "00000004"))
     new_result = conn.execute(select_stmt)
     new_user_selected = mapper.result_to_object(new_result)
     print repr(new_user_selected.__dict__)
