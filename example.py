@@ -40,7 +40,7 @@ def main():
 
     # Use normal SQLAlchemy select statement to
     # select all of the rows from the user table.
-    result = conn.execute(select( [ user_table ] ))
+    result = conn.execute(mapper.select_stmt())
 
     # Use the mapper to get an object iterator from
     # the result and print out the internal dictionaries
@@ -61,7 +61,7 @@ def main():
     # mapper that can be used in expressions and automatically
     # apply the transform to the RHS so we don't need
     # to use the raw DB value here.
-    select_stmt = (select( [ user_table ] )
+    select_stmt = (mapper.select_stmt()
                       .where(mapper.a.user_id == "00000004"))
     new_result = conn.execute(select_stmt)
     new_user_selected = mapper.result_to_object(new_result)
@@ -80,7 +80,7 @@ def main():
     conn.execute(update_stmt)
 
     # Now we can select the object again to get the updated version
-    select_stmt = (select( [ user_table ] )
+    select_stmt = (mapper.select_stmt()
                       .where(mapper.a.user_id == "00000004"))
     new_result = conn.execute(select_stmt)
     new_user_selected = mapper.result_to_object(new_result)

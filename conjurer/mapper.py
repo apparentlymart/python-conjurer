@@ -1,6 +1,7 @@
 
 from conjurer.transforms import IdentityTransform
 from conjurer.expressions import AttributeElement
+import sqlalchemy
 
 
 class AttributeMap(object):
@@ -69,6 +70,9 @@ class Mapper(object):
     def result_to_object(self, result):
         row = result.fetchone()
         return self._object_from_row(row)
+
+    def select_stmt(self):
+        return sqlalchemy.select( [ self.source_table ] )
 
     def _apply_values_to_stmt(self, stmt, obj, exclude_attrs=None):
         if exclude_attrs:
