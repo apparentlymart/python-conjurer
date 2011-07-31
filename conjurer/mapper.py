@@ -112,3 +112,22 @@ class Mapper(object):
             raise Exception("automatic where clause generation for update statements is not yet implemented")
         return update
 
+    def _insert_values_from_kwargs(self, kwargs):
+        real_kwargs = {}
+        for attr_name in kwargs:
+            attr = getattr(self.a, attr_name)
+            column = attr.column
+            transform = attr.transform
+            real_kwargs[column.name] = transform.from_object_attr(
+                kwargs[attr_name]
+            )
+        return real_kwargs
+
+    def insert_stmt(self, **kwargs):
+        real_kwargs = self._insert_values_from_kwargs(kwargs)
+        return self.source_table.insert().values(**real_kwargs)
+
+    def update_stmt(self, **kwargs):
+        real_kwargs = self._insert_values_from_kwargs(kwargs)
+        return self.source_table.update().values(**real_kwargs)
+

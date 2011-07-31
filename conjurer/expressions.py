@@ -9,13 +9,10 @@ class AttributeElement(ColumnOperators):
 
     def __init__(self, column, transform):
         self.column = column
-        if type(transform) is IdentityTransform:
-            self.tranform = None
-        else:
-            self.transform = transform
+        self.transform = transform
 
     def __handle_transform(self, op, obj):
-        if self.transform is not None:
+        if type(self.transform) is not IdentityTransform:
             if (op is operators.like_op or
                 op is operators.ilike_op or
                 op is operators.notlike_op or
