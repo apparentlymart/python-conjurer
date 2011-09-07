@@ -48,7 +48,7 @@ class Mapper(object):
 
             self.mappings.append((column, attr_name, transform))
 
-    def _object_from_row(self, row):
+    def object_from_row(self, row):
         if row is None:
             return None
 
@@ -65,11 +65,11 @@ class Mapper(object):
 
     def result_to_object_iter(self, result):
         for row in result:
-            yield self._object_from_row(row)
+            yield self.object_from_row(row)
 
     def result_to_object(self, result):
         row = result.fetchone()
-        return self._object_from_row(row)
+        return self.object_from_row(row)
 
     def select_stmt(self):
         return sqlalchemy.select( [ self.source_table ] )
