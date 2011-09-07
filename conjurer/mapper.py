@@ -57,7 +57,7 @@ class Mapper(object):
             (column, attr_name, transform) = mapping
             row_value = row[column]
             if row_value is not None:
-                attr_value = transform.to_object_attr(row_value)
+                attr_value = transform.to_object_attr(row_value, row)
             else:
                 attr_value = None
             setattr(obj, attr_name, attr_value)

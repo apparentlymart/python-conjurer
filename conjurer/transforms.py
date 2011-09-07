@@ -2,7 +2,7 @@
 class BaseTransform(object):
     "Base class for transforms"
 
-    def to_object_attr(self, column_value):
+    def to_object_attr(self, column_value, row):
         raise Exception("%r must override to_object_attr" % self)
 
     def from_object_attr(self, attr_value):
@@ -20,7 +20,7 @@ class IdentityTransform(object):
             _identity_transform_instance = IdentityTransform()
         return _identity_transform_instance
 
-    def to_object_attr(self, column_value):
+    def to_object_attr(self, column_value, row):
         return column_value
 
     def from_object_attr(self, attr_value):
@@ -34,7 +34,7 @@ class PaddedHexTransform(object):
     def __init__(self, size=8):
         self.size = size
 
-    def to_object_attr(self, column_value):
+    def to_object_attr(self, column_value, row):
         fmt = "%%0%ix" % self.size
         return fmt % column_value
 
